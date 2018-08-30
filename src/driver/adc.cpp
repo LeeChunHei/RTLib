@@ -26,6 +26,17 @@ ADC::ADC(Config& config) {
 	listener = new ADC_Listener[8];
 }
 
+void ADC::ConfigHWTrigger(bool enable){
+    if (enable)
+    {
+        adc_base->CFG |= ADC_CFG_ADTRG_MASK;
+    }
+    else
+    {
+        adc_base->CFG &= ~ADC_CFG_ADTRG_MASK;
+    }
+}
+
 bool ADC::AutoCalibration() {
 	bool result = true;
 	bool hw_trigger = (ADC_CFG_ADTRG_MASK & adc_base->CFG);

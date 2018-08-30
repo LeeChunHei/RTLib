@@ -178,20 +178,28 @@ Uart::Uart(Config& config) :
 	uart_base->CTRL = reg;
 }
 
-bool Uart::OpenTXPin(System::Pinout::Config& config){
-if(System::Pinout::GetUartTXPinConfig(config,uart_base)){
-	System::Pinout::InitPin(config);
-	return true;
-}else{
-	return false;
-}
+void Uart::SendByteBuffer(const uint8_t* data, uint8_t length) {
+    while (length--)
+    {
+        while (!(uart_base->STAT & LPUART_STAT_TDRE_MASK));
+        uart_base->DATA = *(data++);
+    }
 }
 
-bool Uart::OpenRXPin(System::Pinout::Config& config){
-	if(System::Pinout::GetUartRXPinConfig(config,uart_base)){
+bool Uart::OpenTXPin(System::Pinout::Config& config) {
+	if (System::Pinout::GetUartTXPinConfig(config, uart_base)) {
 		System::Pinout::InitPin(config);
 		return true;
-	}else{
+	} else {
+		return false;
+	}
+}
+
+bool Uart::OpenRXPin(System::Pinout::Config& config) {
+	if (System::Pinout::GetUartRXPinConfig(config, uart_base)) {
+		System::Pinout::InitPin(config);
+		return true;
+	} else {
 		return false;
 	}
 }
