@@ -10,6 +10,7 @@
 
 #include "system/cmsis/access_layer/access_layer.h"
 #include "system/pinout/MIMXRT1052.h"
+#include <bitset>
 
 namespace Driver {
 
@@ -69,11 +70,9 @@ public:
 		kInput0, kInput1, kInput2, kInput3, kInput4, kInput5, kInput6, kInput7, kInput8, kInput9, kInput10, kInput11, kInput12, kInput13, kInput14, kInput15
 	};
 	typedef void (*ADC_Listener)(ADC* adc);
-	void ConfigChannel(Channel channel, Input input, ADC_Listener listener = nullptr, uint8_t interrupt_priority = 15);
-	bool OpenADCInputPin(System::Pinout::Name pin_name);
-	void CloseADCInputPin(System::Pinout::Name pin_name);
-	inline void StartChannelConversation(Channel channel, Input input) {
-		adc_base->HC[(uint8_t) channel] |= (uint8_t) input;
+	bool ConfigChannel(Channel channel, Input input, ADC_Listener listener = nullptr, uint8_t interrupt_priority = 15);
+	inline void StartChannelConversation(Input input) {
+		adc_base->HC[0] |= (uint8_t) input;
 	}
 	inline bool IsComplete(Channel channel) const {
 		return ((adc_base->HS) & (1U << (uint8_t) channel)) >> (uint8_t) channel;
@@ -85,8 +84,13 @@ public:
 		return listener;
 	}
 private:
+	System::Pinout::Name GetInputPinName(Input input);
+	bool OpenADCInputPin(System::Pinout::Name pin_name);
+	void CloseADCInputPin(System::Pinout::Name pin_name);
+
 	ADC_Type* adc_base;
 	ADC_Listener* listener;
+	std::bitset<16> opened_input_pin;
 };
 
 }

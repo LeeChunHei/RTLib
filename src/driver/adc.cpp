@@ -83,13 +83,19 @@ bool ADC::AutoCalibration() {
 	return result;
 }
 
-void ADC::ConfigChannel(Channel channel, Input input, ADC_Listener listener, uint8_t interrupt_priority) {
+bool ADC::ConfigChannel(Channel channel, Input input, ADC_Listener listener, uint8_t interrupt_priority) {
 	if (listener) {
 		this->listener[(uint8_t) channel] = listener;
 		NVIC_EnableIRQ(adc_base == ADC1 ? ADC1_IRQn : ADC2_IRQn);
 		NVIC_SetPriority(adc_base == ADC1 ? ADC1_IRQn : ADC2_IRQn, interrupt_priority);
 	}
 	adc_base->HC[(uint8_t) channel] = (0 | (uint8_t) input | (bool) listener << 7);
+	if(!(opened_input_pin[(uint8_t)input])){
+		opened_input_pin[(uint8_t)input]=true;
+		return OpenADCInputPin(GetInputPinName(input));
+	}else{
+		return true;
+	}
 }
 
 bool ADC::OpenADCInputPin(System::Pinout::Name pin_name) {
@@ -100,6 +106,22 @@ bool ADC::OpenADCInputPin(System::Pinout::Name pin_name) {
 		return true;
 	}else{
 		return false;
+	}
+}
+
+System::Pinout::Name ADC::GetInputPinName(Input input){
+	if(adc_base==ADC1){
+		if(input==Input::kInput0){
+			return System::Pinout::Name::kGPIO_AD_B1_11;
+		}else{
+			return (System::Pinout::Name)((uint8_t)input+53);
+		}
+	}else{
+		if(input<=Input::kInput4){
+			return (System::Pinout::Name)((uint8_t)input+69);
+		}else{
+			return (System::Pinout::Name)((uint8_t)input+53);
+		}
 	}
 }
 

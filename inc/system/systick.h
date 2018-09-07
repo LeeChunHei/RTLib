@@ -40,7 +40,7 @@ public:
 		}
 	}
 	static inline void DelayUS(uint32_t microsecond) {
-		uint32_t load_val=(uint32_t)(1000 * (system_core_clock / 1000000000.0));
+		uint32_t load_val = (uint32_t)(1000 * (system_core_clock / 1000000000.0));
 		while (microsecond--) {
 			DelayCount(load_val);
 		}
@@ -60,7 +60,7 @@ public:
 	static inline void DelayCount(uint32_t count) {
 		volatile uint32_t temp = SysTick->VAL;
 		SysTick->CTRL = 0x00;
-		SysTick->LOAD = count-8;
+		SysTick->LOAD = count - 8;
 		SysTick->VAL = 0x00;
 		SysTick->CTRL = (0 | SysTick_CTRL_ENABLE_Msk | SysTick_CTRL_CLKSOURCE_Msk);
 		while (!(SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk))

@@ -295,6 +295,102 @@ bool GetUartRXPinConfig(Config& config, LPUART_Type* uart_base) {
 	return true;
 }
 
+bool GetI2CSclPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B0_00) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		module = 0;
+	} else if (pin == Name::kGPIO_AD_B1_00) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		module = 0;
+	} else if (pin == Name::kGPIO_SD_B1_04) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 0;
+	} else if (pin == Name::kGPIO_B0_04) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 1;
+	} else if (pin == Name::kGPIO_SD_B1_11) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		module = 1;
+	} else if (pin == Name::kGPIO_EMC_22) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 2;
+	} else if (pin == Name::kGPIO_AD_B1_07) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		module = 2;
+	} else if (pin == Name::kGPIO_SD_B0_00) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 2;
+	} else if (pin == Name::kGPIO_AD_B0_12) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		module = 3;
+	} else if (pin == Name::kGPIO_EMC_12) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 3;
+	} else {
+		return false;
+	}
+//	config.pin_config.hysteresis_enable=false;
+	config.pin_config.fast_slew_rate=false;
+	config.pin_config.drive_strength=Config::PinConfig::DriveStrength::kDSE6;
+	config.pin_config.speed=Config::PinConfig::Speed::k100MHz1;
+	config.pin_config.pull_keep_config=Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.open_drain_enable=true;
+	config.force_input = true;
+	return true;
+}
+
+bool GetI2CSdaPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B0_01) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		module = 0;
+	} else if (pin == Name::kGPIO_AD_B1_01) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		module = 0;
+	} else if (pin == Name::kGPIO_SD_B1_05) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 0;
+	} else if (pin == Name::kGPIO_B0_05) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 1;
+	} else if (pin == Name::kGPIO_SD_B1_10) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		module = 1;
+	} else if (pin == Name::kGPIO_EMC_21) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 2;
+	} else if (pin == Name::kGPIO_AD_B1_06) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		module = 2;
+	} else if (pin == Name::kGPIO_SD_B0_01) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 2;
+	} else if (pin == Name::kGPIO_AD_B0_13) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		module = 3;
+	} else if (pin == Name::kGPIO_EMC_11) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 3;
+	} else {
+		return false;
+	}
+//	config.pin_config.hysteresis_enable=false;
+	config.pin_config.fast_slew_rate=false;
+	config.pin_config.drive_strength=Config::PinConfig::DriveStrength::kDSE6;
+	config.pin_config.speed=Config::PinConfig::Speed::k100MHz1;
+	config.pin_config.pull_keep_config=Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.open_drain_enable=true;
+	config.force_input = true;
+	return true;
+}
+
 void InitPin(Config& config) {
 	if (pin_active[(uint8_t) config.pin]) {
 		assert(false);
