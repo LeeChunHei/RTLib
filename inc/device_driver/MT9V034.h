@@ -28,6 +28,12 @@ public:
 	MT9V034(const Config& config);
 	void Start();
 	void Stop();
+	inline uint16_t GetWidth() const {
+		return width;
+	}
+	inline uint16_t GetHeight() const {
+		return height;
+	}
 	inline bool IsAvailable() const {
 		return (bool) (ready_buffer_addr.size());
 	}

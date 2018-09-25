@@ -59,14 +59,14 @@ Driver::Csi::Config GetCsiConfig(const MT9V034::Config& camera_config) {
 inline void MT9V034::RegSet(uint8_t reg_addr, uint16_t value) {
 	while (!i2c_master.SendByte(0xB8 >> 1, (uint8_t) reg_addr, value >> 8))
 		;
-	while (!i2c_master.SendByte(0xB8 >> 1, (uint8_t) 0xF0, value & 0b11111111))
+	while (!i2c_master.SendByte(0xB8 >> 1, (uint8_t) 0xF0, value & 0xFF))
 		;
 }
 
 MT9V034::MT9V034(const Config& config) :
 		i2c_master(GetI2CConfig(MT9V034_SCK(config.id), MT9V034_SDA(config.id))), csi(GetCsiConfig(config)), width((config.width >> 3) << 3), height((config.height >> 3) << 3) {
-	uint8_t out_byte_high, out_byte_low;
-	uint16_t result;
+//	uint8_t out_byte_high, out_byte_low;
+//	uint16_t result;
 //	assert(i2c_master.GetByte(0xB8 >> 1, (uint8_t) 0x00, out_byte_high));
 //	assert(i2c_master.GetByte(0xB8 >> 1, (uint8_t) 0xF0, out_byte_low));
 //	result = out_byte_high;
