@@ -43,7 +43,6 @@ extern uint32_t audio_pll_clock; /*!< Audio PLLCLK. */
 extern uint32_t video_pll_clock; /*!< Video PLLCLK. */
 
 void InitSystem();
-
 }
 
 #endif /* INC_SYSTEM_SYSTEM_H_ */

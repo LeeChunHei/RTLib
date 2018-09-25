@@ -8,64 +8,111 @@
 #ifndef INC_DRIVER_CSI_H_
 #define INC_DRIVER_CSI_H_
 
-#include <stdint.h>
+#include "system/cmsis/access_layer/access_layer.h"
+#include "system/pinout/pinout.h"
+#include <functional>
 
-namespace Driver{
+namespace Driver {
 
-#define FSL_VIDEO_FOURCC(a, b, c, d)	((uint32_t)(a) | ((uint32_t)(b) << 8U) | ((uint32_t)(c) << 16U) | ((uint32_t)(d) << 24U))
-
-class CSI{
+class Csi {
 public:
-	struct Config{
-		enum struct PixelFormat{
-		    /* RGB */
-		    kXRGB8888 = FSL_VIDEO_FOURCC('X', 'R', '2', '4'), /*!< 32-bit XRGB8888. */
-		    kRGBX8888 = FSL_VIDEO_FOURCC('R', 'X', '2', '4'), /*!< 32-bit RGBX8888. */
-		    kXBGR8888 = FSL_VIDEO_FOURCC('X', 'B', '2', '4'), /*!< 32-bit XBGR8888. */
-		    kBGRX8888 = FSL_VIDEO_FOURCC('B', 'X', '2', '4'), /*!< 32-bit BGRX8888. */
-
-		    kRGB888 = FSL_VIDEO_FOURCC('R', 'G', '2', '4'), /*!< 24-bit RGB888. */
-		    kBGR888 = FSL_VIDEO_FOURCC('B', 'G', '2', '4'), /*!< 24-bit BGR888. */
-
-		    kRGB565 = FSL_VIDEO_FOURCC('R', 'G', '1', '6'), /*!< 16-bit RGB565. */
-		    kBGR565 = FSL_VIDEO_FOURCC('B', 'G', '1', '6'), /*!< 16-bit BGR565. */
-
-		    kXRGB1555 = FSL_VIDEO_FOURCC('X', 'R', '1', '5'), /*!< 16-bit XRGB1555. */
-		    kRGBX5551 = FSL_VIDEO_FOURCC('R', 'X', '1', '5'), /*!< 16-bit RGBX5551. */
-		    kXBGR1555 = FSL_VIDEO_FOURCC('X', 'B', '1', '5'), /*!< 16-bit XBGR1555. */
-		    kBGRX5551 = FSL_VIDEO_FOURCC('B', 'X', '1', '5'), /*!< 16-bit BGRX5551. */
-
-		    kXRGB4444 = FSL_VIDEO_FOURCC('X', 'R', '1', '2'), /*!< 16-bit XRGB4444. */
-		    kRGBX4444 = FSL_VIDEO_FOURCC('R', 'X', '1', '2'), /*!< 16-bit RGBX4444. */
-		    kXBGR4444 = FSL_VIDEO_FOURCC('X', 'B', '1', '2'), /*!< 16-bit XBGR4444. */
-		    kBGRX4444 = FSL_VIDEO_FOURCC('B', 'X', '1', '2'), /*!< 16-bit BGRX4444. */
-
-		    /* YUV. */
-		    kYUYV = FSL_VIDEO_FOURCC('Y', 'U', 'Y', 'V'), /*!< YUV422, Y-U-Y-V. */
-		    kYVYU = FSL_VIDEO_FOURCC('Y', 'V', 'Y', 'U'), /*!< YUV422, Y-V-Y-U. */
-		    kUYVY = FSL_VIDEO_FOURCC('U', 'Y', 'V', 'Y'), /*!< YUV422, U-Y-V-Y. */
-		    kVYUY = FSL_VIDEO_FOURCC('V', 'Y', 'U', 'Y'), /*!< YUV422, V-Y-U-Y. */
-
-		    kXYUV = FSL_VIDEO_FOURCC('X', 'Y', 'U', 'V'), /*!< YUV444, X-Y-U-V. */
-		    kXYVU = FSL_VIDEO_FOURCC('X', 'Y', 'V', 'U'), /*!< YUV444, X-Y-V-U. */
+	typedef std::function<void(Csi*)> Csi_Listener;
+//	typedef void (*Csi_Listener)(Csi* csi_ptr);
+	struct Config {
+		enum struct WorkMode {
+			kGatedClockMode = CSI_CSICR1_GCLK_MODE(1U), /*!< HSYNC, VSYNC, and PIXCLK signals are used. */
+			kNonGatedClockMode = 0U, /*!< VSYNC, and PIXCLK signals are used. */
+			kCCIR656ProgressiveMode = CSI_CSICR1_CCIR_EN(1U), /*!< CCIR656 progressive mode. */
 		};
-		enum struct Interface{
-		    kGatedClock,    /*!< HSYNC/HREF, VSYNC, and PIXCLK signals are used. */
-		    kNonGatedClock, /*!< VSYNC, and PIXCLK signals are used. */
-		    kCCIR656,       /*!< CCIR656 interface. */
-		    kMIPI,          /*!< MIPI CSI2 interface. */
+		enum struct DataBus {
+			k8Bit, /*!< 8-bit data bus. */
 		};
-	    PixelFormat pixel_format;    /*!< Pixel format. */
-	    uint8_t bytesPerPixel;               /*!< Byte per pixel. */
-	    uint32_t resolution;                 /*!< Resolution, see @ref video_resolution_t and @ref FSL_VIDEO_RESOLUTION. */
-	    uint16_t frameBufferLinePitch_Bytes; /*!< Frame buffer line pitch in bytes. */
-	    Interface interface;        /*!< Interface type. */
-	    uint32_t controlFlags;               /*!< Control flags, OR'ed value of @ref _camera_flags. */
-	    uint8_t framePerSec;                 /*!< Frame per second. */
-	    uint8_t mipiChannel;                 /*!< MIPI virtual channel. */
-	    uint8_t csiLanes;                    /*!< MIPI CSI data lanes number. */
+		struct PinList {
+			System::Pinout::Name pclk = System::Pinout::Name::kDisable;
+			System::Pinout::Name mclk = System::Pinout::Name::kDisable;
+			System::Pinout::Name vsync = System::Pinout::Name::kDisable;
+			System::Pinout::Name hsync = System::Pinout::Name::kDisable;
+			System::Pinout::Name field = System::Pinout::Name::kDisable;
+			System::Pinout::Name data0 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data1 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data2 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data3 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data4 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data5 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data6 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data7 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data8 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data9 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data10 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data11 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data12 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data13 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data14 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data15 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data16 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data17 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data18 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data19 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data20 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data21 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data22 = System::Pinout::Name::kDisable;
+			System::Pinout::Name data23 = System::Pinout::Name::kDisable;
+		};
+		PinList pin_list;
+		uint16_t width = 320u; /*!< Pixels of the input frame. */
+		uint16_t height = 240u; /*!< Lines of the input frame.  */
+		bool hsync_active_high = true;
+		bool data_latch_on_rising_edge = true;
+		bool vsync_active_low = false;
+		bool is_10_bit_data = false;
+		uint8_t bytes_per_pixel = 2u;
+		/*!< Bytes per pixel, valid values are:
+		 - 2: Used for RGB565, YUV422, and so on.
+		 - 3: Used for packed RGB888, packed YUV444, and so on.
+		 - 4: Used for XRGB8888, XYUV444, and so on.
+		 */
+		uint16_t line_pitch_bytes = 320u * 2u; /*!< Frame buffer line pitch, must be 8-byte aligned. */
+		WorkMode work_mode = WorkMode::kGatedClockMode; /*!< CSI work mode. */
+		DataBus data_bus = DataBus::k8Bit; /*!< Data bus width. */
+		bool use_ext_vsync = true; /*!< In CCIR656 progressive mode, set true to use external VSYNC signal, set false to use internal VSYNC signal decoded from SOF. */
+		Csi_Listener listener = nullptr;
+		uint8_t interrupt_priority = 15;	//Interrupt priority, range [0-15], smaller value means higher priority
 	};
-	CSI(Config& config);
+	Csi(const Config& config);
+	void Start();
+	void Stop();
+	/*
+	 *
+	 */
+	void ConfigTransferBuffer(uint8_t index, uint32_t addr);
+	uint32_t GetTransferBuffer(uint8_t index);
+	/*
+	 * reval bit 0 asserted means first buffer ready bit 1 asserted means second buffer ready
+	 */
+	uint8_t IsTransferComplete() {
+		return ((csi_base->CSISR >> 19) & 3u);
+	}
+	Csi_Listener GetListener() {
+		return listener;
+	}
+	void SetListener(Csi_Listener listener, const uint8_t interrupt_priority);
+private:
+	void Reset();
+	/*
+	 * param: bit 0 refer to rx fifo, bit 1 refer to static fifo
+	 */
+	void ClearFIFO(uint8_t fifo);
+	/*
+	 * param: bit 0 refer to rx fifo, bit 1 refer to static fifo
+	 */
+	void ReflashFIFODma(uint8_t fifo);
+	/*
+	 * param: fifo_enable bit 0 control wherether fifo is enable, bit 1 refer to rx fifo, bit 2 refer to static fifo
+	 */
+	void EnableFIFODmaRequest(uint8_t fifo_enable);
+
+	Csi_Listener listener;
+	CSI_Type* csi_base;
 };
 
 }

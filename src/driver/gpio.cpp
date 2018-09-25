@@ -17,6 +17,7 @@ GPIO::GPIO(const GPIO::Config& config) {
 	pin_config.mux_mode = System::Pinout::Config::MuxMode::kAlt5;
 	pin_config.pin_config = config.pin_config;
 	System::Pinout::InitPin(pin_config);
+	pin_name = config.pin;
 	if (config.pin <= System::Pinout::Name::kGPIO_EMC_31) {
 		gpio_base = GPIO4;
 		gpio_pin = (uint8_t) config.pin;
@@ -41,6 +42,8 @@ GPIO::GPIO(const GPIO::Config& config) {
 		gpio_base = GPIO3;
 		gpio_pin = ((uint8_t) config.pin - (uint8_t) System::Pinout::Name::kGPIO_SD_B1_00);
 		System::CLOCK_EnableClock(System::kCLOCK_Gpio3);
+	} else {
+		return;
 	}
 	gpio_base->IMR &= ~(1u << gpio_pin);
 	if (config.gpio_dir == Direction::kDigitalInput) {
@@ -131,6 +134,19 @@ GPIO::GPIO(const GPIO::Config& config) {
 	}
 }
 
+GPIO::~GPIO() {
+	if (listener) {
+		int index = ((uint32_t) gpio_base - 0x401B8000) / 0x4000;
+		for (int i = 0; i < port_listener[index].size(); i++) {
+			if (port_listener[index][i]->GetPin() == gpio_pin) {
+				port_listener[index].erase(port_listener[index].begin() + i);
+				break;
+			}
+		}
+	}
+	System::Pinout::DeinitPin(pin_name);
+}
+
 GPIO::Direction GPIO::ToggleDirection(GPIO::Config::Interrupt interrupt_mode, uint8_t interrupt_priority, GPIO::GPIO_Listener listener, bool start_interrupt) {
 	if (gpio_base->GDIR >> gpio_pin & 1u) {
 		gpio_base->GDIR &= ~(1u << gpio_pin);
@@ -149,46 +165,46 @@ GPIO::Direction GPIO::ToggleDirection(GPIO::Config::Interrupt interrupt_mode, ui
 				port_listener[0].push_back(this);
 				if (gpio_pin < 16) {
 					NVIC_EnableIRQ (GPIO1_Combined_0_15_IRQn);
-					NVIC_SetPriority(GPIO1_Combined_0_15_IRQn,  interrupt_priority);
+					NVIC_SetPriority(GPIO1_Combined_0_15_IRQn, interrupt_priority);
 				} else {
 					NVIC_EnableIRQ (GPIO1_Combined_16_31_IRQn);
-					NVIC_SetPriority(GPIO1_Combined_16_31_IRQn,  interrupt_priority);
+					NVIC_SetPriority(GPIO1_Combined_16_31_IRQn, interrupt_priority);
 				}
 			} else if (gpio_base == GPIO2) {
 				port_listener[1].push_back(this);
 				if (gpio_pin < 16) {
 					NVIC_EnableIRQ (GPIO2_Combined_0_15_IRQn);
-					NVIC_SetPriority(GPIO2_Combined_0_15_IRQn,  interrupt_priority);
+					NVIC_SetPriority(GPIO2_Combined_0_15_IRQn, interrupt_priority);
 				} else {
 					NVIC_EnableIRQ (GPIO2_Combined_16_31_IRQn);
-					NVIC_SetPriority(GPIO2_Combined_16_31_IRQn,  interrupt_priority);
+					NVIC_SetPriority(GPIO2_Combined_16_31_IRQn, interrupt_priority);
 				}
 			} else if (gpio_base == GPIO3) {
 				port_listener[2].push_back(this);
 				if (gpio_pin < 16) {
 					NVIC_EnableIRQ (GPIO3_Combined_0_15_IRQn);
-					NVIC_SetPriority(GPIO3_Combined_0_15_IRQn,  interrupt_priority);
+					NVIC_SetPriority(GPIO3_Combined_0_15_IRQn, interrupt_priority);
 				} else {
 					NVIC_EnableIRQ (GPIO3_Combined_16_31_IRQn);
-					NVIC_SetPriority(GPIO3_Combined_16_31_IRQn,  interrupt_priority);
+					NVIC_SetPriority(GPIO3_Combined_16_31_IRQn, interrupt_priority);
 				}
 			} else if (gpio_base == GPIO4) {
 				port_listener[3].push_back(this);
 				if (gpio_pin < 16) {
 					NVIC_EnableIRQ (GPIO4_Combined_0_15_IRQn);
-					NVIC_SetPriority(GPIO4_Combined_0_15_IRQn,  interrupt_priority);
+					NVIC_SetPriority(GPIO4_Combined_0_15_IRQn, interrupt_priority);
 				} else {
 					NVIC_EnableIRQ (GPIO4_Combined_16_31_IRQn);
-					NVIC_SetPriority(GPIO4_Combined_16_31_IRQn,  interrupt_priority);
+					NVIC_SetPriority(GPIO4_Combined_16_31_IRQn, interrupt_priority);
 				}
 			} else if (gpio_base == GPIO5) {
 				port_listener[4].push_back(this);
 				if (gpio_pin < 16) {
 					NVIC_EnableIRQ (GPIO5_Combined_0_15_IRQn);
-					NVIC_SetPriority(GPIO5_Combined_0_15_IRQn,  interrupt_priority);
+					NVIC_SetPriority(GPIO5_Combined_0_15_IRQn, interrupt_priority);
 				} else {
 					NVIC_EnableIRQ (GPIO5_Combined_16_31_IRQn);
-					NVIC_SetPriority(GPIO5_Combined_16_31_IRQn,  interrupt_priority);
+					NVIC_SetPriority(GPIO5_Combined_16_31_IRQn, interrupt_priority);
 				}
 			}
 			switch (interrupt_mode) {

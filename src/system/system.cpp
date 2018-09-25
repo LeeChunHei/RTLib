@@ -158,6 +158,7 @@ void InitSystem(){
 	/* Enable I cache and D cache */
 	SCB_EnableDCache();
 	SCB_EnableICache();
+
     /* Init RTC OSC clock frequency. */
     CLOCK_SetRtcXtalFreq(32768U);
     /* Enable 1MHz clock output. */
@@ -165,7 +166,7 @@ void InitSystem(){
     /* Use free 1MHz clock output. */
     XTALOSC24M->OSC_CONFIG2 &= ~XTALOSC24M_OSC_CONFIG2_MUX_1M_MASK;
     /* Set XTAL 24MHz clock frequency. */
-    CLOCK_SetXtalFreq(CPU_XTAL_CLK_HZ);
+	CLOCK_SetXtalFreq(24000000U);
     /* Enable XTAL 24MHz clock source. */
     CLOCK_InitExternalClk(0);
     /* Enable internal RC. */
@@ -201,6 +202,23 @@ void InitSystem(){
     CLOCK_InitSysPfd(kCLOCK_Pfd3, 16);
     /* Disable pfd offset. */
     CCM_ANALOG->PLL_SYS &= ~CCM_ANALOG_PLL_SYS_PFD_OFFSET_EN_MASK;
+#endif
+	/* In SDK projects, external flash (configured by FLEXSPI) will be initialized by dcd.
+	 * With this macro XIP_EXTERNAL_FLASH, usb1 pll (selected to be FLEXSPI clock source in SDK projects) will be left unchanged.
+	 * Note: If another clock source is selected for FLEXSPI, user may want to avoid changing that clock as well.*/
+#if !(defined(XIP_EXTERNAL_FLASH) && (XIP_EXTERNAL_FLASH == 1))
+	/* Init Usb1 PLL. */
+	CLOCK_InitUsb1Pll(&usb1PllConfig_BOARD_BootClockRUN);
+	/* Init Usb1 pfd0. */
+	CLOCK_InitUsb1Pfd(kCLOCK_Pfd0, 24);
+	/* Init Usb1 pfd1. */
+	CLOCK_InitUsb1Pfd(kCLOCK_Pfd1, 16);
+	/* Init Usb1 pfd2. */
+	CLOCK_InitUsb1Pfd(kCLOCK_Pfd2, 22);
+	/* Init Usb1 pfd3. */
+	CLOCK_InitUsb1Pfd(kCLOCK_Pfd3, 19);
+	/* Disable Usb1 PLL output for USBPHY1. */
+	CCM_ANALOG->PLL_USB1 &= ~CCM_ANALOG_PLL_USB1_EN_USB_CLKS_MASK;
 #endif
     /* DeInit Audio PLL. */
     CLOCK_DeinitAudioPll();
@@ -260,16 +278,25 @@ void InitSystem(){
      * Note: If another clock source is selected for SEMC, user may want to avoid changing that clock as well.*/
 #ifndef SKIP_SYSCLK_INIT
     /* Set SEMC_PODF. */
-    CLOCK_SetDiv(kCLOCK_SemcDiv, 1);
+	CLOCK_SetDiv(kCLOCK_SemcDiv, 3);
     /* Set Semc alt clock source. */
     CLOCK_SetMux(kCLOCK_SemcAltMux, 0);
     /* Set Semc clock source. */
     CLOCK_SetMux(kCLOCK_SemcMux, 0);
 #endif
+	/* In SDK projects, external flash (configured by FLEXSPI) will be initialized by dcd.
+	 * With this macro XIP_EXTERNAL_FLASH, usb1 pll (selected to be FLEXSPI clock source in SDK projects) will be left unchanged.
+	 * Note: If another clock source is selected for FLEXSPI, user may want to avoid changing that clock as well.*/
+#if !(defined(XIP_EXTERNAL_FLASH) && (XIP_EXTERNAL_FLASH == 1))
+	/* Set FLEXSPI_PODF. */
+	CLOCK_SetDiv(kCLOCK_FlexspiDiv, 1);
+	/* Set Flexspi clock source. */
+	CLOCK_SetMux(kCLOCK_FlexspiMux, 1);
+#endif
     /* Set CSI_PODF. */
-    CLOCK_SetDiv(kCLOCK_CsiDiv, 4);
+	CLOCK_SetDiv(kCLOCK_CsiDiv, 4);
     /* Set Csi clock source. */
-    CLOCK_SetMux(kCLOCK_CsiMux, 1);
+	CLOCK_SetMux(kCLOCK_CsiMux, 1);
     /* Set LPSPI_PODF. */
     CLOCK_SetDiv(kCLOCK_LpspiDiv, 2);
     /* Set Lpspi clock source. */

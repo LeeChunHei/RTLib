@@ -81,7 +81,7 @@ public:
 	inline uint8_t ReadByte() {
 		return (bool) m_data_bits ? (uart_base->DATA & 0x7F) : uart_base->DATA;
 	}
-	void SendByteBuffer(const uint8_t* data, uint8_t length);
+	void SendByteBuffer(const uint8_t* data, uint32_t length);
 	uint8_t ReadByteBuffer(uint8_t* data);
 	bool OpenTXPin(System::Pinout::Config& config);
 	bool OpenRXPin(System::Pinout::Config& config);

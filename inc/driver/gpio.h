@@ -40,6 +40,7 @@ public:
 		bool start_interrupt = false;
 	};
 	GPIO(const Config& config);
+	~GPIO();
 	/*
 	 * @brief Set the output logic level, do nothing when it is a digital input
 	 *
@@ -114,6 +115,7 @@ public:
 private:
 	GPIO_Type* gpio_base;
 	uint8_t gpio_pin;
+	System::Pinout::Name pin_name;
 	GPIO_Listener listener;
 };
 

@@ -178,7 +178,7 @@ Uart::Uart(Config& config) :
 	uart_base->CTRL = reg;
 }
 
-void Uart::SendByteBuffer(const uint8_t* data, uint8_t length) {
+void Uart::SendByteBuffer(const uint8_t* data, uint32_t length) {
     while (length--)
     {
         while (!(uart_base->STAT & LPUART_STAT_TDRE_MASK));

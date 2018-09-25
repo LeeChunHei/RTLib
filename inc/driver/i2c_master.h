@@ -51,7 +51,7 @@ public:
 		uint32_t recieve_wait_time=0;	//The time in ns that i2c will wait for the data come in, default 0 means no waiting time given
 		HostRequest host_request;/*!< Host request options. */
 	};
-	I2CMaster(Config& config);
+	I2CMaster(const Config& config);
 	bool SendByte(const uint8_t slave_addr, const uint8_t reg_addr, const uint8_t data);
 	bool SendByte(const uint8_t slave_addr, const uint16_t reg_addr, const uint8_t data);
 	bool GetByte(const uint8_t slave_addr, const uint8_t reg_addr, uint8_t& data);

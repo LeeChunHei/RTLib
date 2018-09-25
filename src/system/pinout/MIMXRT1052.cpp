@@ -333,10 +333,10 @@ bool GetI2CSclPinConfig(Config& config, uint8_t& module) {
 	} else {
 		return false;
 	}
-//	config.pin_config.hysteresis_enable=false;
+	config.pin_config.hysteresis_enable = false;
 	config.pin_config.fast_slew_rate=false;
 	config.pin_config.drive_strength=Config::PinConfig::DriveStrength::kDSE6;
-	config.pin_config.speed=Config::PinConfig::Speed::k100MHz1;
+	config.pin_config.speed = Config::PinConfig::Speed::k100MHz2;
 	config.pin_config.pull_keep_config=Config::PinConfig::PullKeepConfig::kKeep;
 	config.pin_config.open_drain_enable=true;
 	config.force_input = true;
@@ -381,13 +381,742 @@ bool GetI2CSdaPinConfig(Config& config, uint8_t& module) {
 	} else {
 		return false;
 	}
-//	config.pin_config.hysteresis_enable=false;
+	config.pin_config.hysteresis_enable = false;
 	config.pin_config.fast_slew_rate=false;
 	config.pin_config.drive_strength=Config::PinConfig::DriveStrength::kDSE6;
-	config.pin_config.speed=Config::PinConfig::Speed::k100MHz1;
+	config.pin_config.speed = Config::PinConfig::Speed::k100MHz2;
 	config.pin_config.pull_keep_config=Config::PinConfig::PullKeepConfig::kKeep;
 	config.pin_config.open_drain_enable=true;
 	config.force_input = true;
+	return true;
+}
+
+bool GetSpiSckPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_27) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		*((uint32_t*) 0x401F84F0U) = 0;
+		module = 1;
+	} else if (pin == Name::kGPIO_SD_B0_00) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		*((uint32_t*) 0x401F84F0U) = 1;
+		module = 1;
+	} else if (pin == Name::kGPIO_SD_B1_07) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		*((uint32_t*) 0x401F8500U) = 0;
+		module = 2;
+	} else if (pin == Name::kGPIO_EMC_00) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		*((uint32_t*) 0x401F8500U) = 1;
+		module = 2;
+	} else if (pin == Name::kGPIO_AD_B0_00) {
+		config.mux_mode = Config::MuxMode::kAlt7;
+		*((uint32_t*) 0x401F8510U) = 0;
+		module = 3;
+	} else if (pin == Name::kGPIO_AD_B1_15) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		*((uint32_t*) 0x401F8510U) = 1;
+		module = 3;
+	} else if (pin == Name::kGPIO_B0_03) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		*((uint32_t*) 0x401F8520U) = 0;
+		module = 4;
+	} else if (pin == Name::kGPIO_B1_07) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F8520U) = 1;
+		module = 4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetSpiSdoPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_28) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		*((uint32_t*) 0x401F84F8U) = 0;
+		module = 1;
+	} else if (pin == Name::kGPIO_SD_B0_02) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		*((uint32_t*) 0x401F84F8U) = 1;
+		module = 1;
+	} else if (pin == Name::kGPIO_SD_B1_08) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		*((uint32_t*) 0x401F8508U) = 0;
+		module = 2;
+	} else if (pin == Name::kGPIO_EMC_02) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		*((uint32_t*) 0x401F8508U) = 1;
+		module = 2;
+	} else if (pin == Name::kGPIO_AD_B0_01) {
+		config.mux_mode = Config::MuxMode::kAlt7;
+		*((uint32_t*) 0x401F8518U) = 0;
+		module = 3;
+	} else if (pin == Name::kGPIO_AD_B1_14) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		*((uint32_t*) 0x401F8518U) = 1;
+		module = 3;
+	} else if (pin == Name::kGPIO_B0_02) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		*((uint32_t*) 0x401F8528U) = 0;
+		module = 4;
+	} else if (pin == Name::kGPIO_B1_06) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F8528U) = 1;
+		module = 4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetSpiSdiPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_29) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		*((uint32_t*) 0x401F84F4U) = 0;
+		module = 1;
+	} else if (pin == Name::kGPIO_SD_B0_03) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		*((uint32_t*) 0x401F84F4U) = 1;
+		module = 1;
+	} else if (pin == Name::kGPIO_SD_B1_09) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		*((uint32_t*) 0x401F8504U) = 0;
+		module = 2;
+	} else if (pin == Name::kGPIO_EMC_03) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		*((uint32_t*) 0x401F8504U) = 1;
+		module = 2;
+	} else if (pin == Name::kGPIO_AD_B0_02) {
+		config.mux_mode = Config::MuxMode::kAlt7;
+		*((uint32_t*) 0x401F8514U) = 0;
+		module = 3;
+	} else if (pin == Name::kGPIO_AD_B1_13) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		*((uint32_t*) 0x401F8514U) = 1;
+		module = 3;
+	} else if (pin == Name::kGPIO_B0_01) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		*((uint32_t*) 0x401F8524U) = 0;
+		module = 4;
+	} else if (pin == Name::kGPIO_B1_05) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F8524U) = 1;
+		module = 4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetSpiPCSPinConfig(Config& config, uint8_t& module, uint8_t& cs) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_30) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		*((uint32_t*) 0x401F84ECU) = 1;
+		module = 1;
+		cs = 0;
+	} else if (pin == Name::kGPIO_SD_B0_01) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		*((uint32_t*) 0x401F84ECU) = 0;
+		module = 1;
+		cs = 0;
+	} else if (pin == Name::kGPIO_SD_B1_06) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		*((uint32_t*) 0x401F84FCU) = 0;
+		module = 2;
+		cs = 0;
+	} else if (pin == Name::kGPIO_EMC_01) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		*((uint32_t*) 0x401F84FCU) = 1;
+		module = 2;
+		cs = 0;
+	} else if (pin == Name::kGPIO_AD_B0_03) {
+		config.mux_mode = Config::MuxMode::kAlt7;
+		*((uint32_t*) 0x401F850CU) = 0;
+		module = 3;
+		cs = 0;
+	} else if (pin == Name::kGPIO_AD_B1_12) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		*((uint32_t*) 0x401F850CU) = 1;
+		module = 3;
+		cs = 0;
+	} else if (pin == Name::kGPIO_B0_00) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		*((uint32_t*) 0x401F851CU) = 0;
+		module = 4;
+		cs = 0;
+	} else if (pin == Name::kGPIO_B1_04) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F851CU) = 1;
+		module = 4;
+		cs = 0;
+	} else if (pin == Name::kGPIO_EMC_31) {
+		config.mux_mode = Config::MuxMode::kAlt3;
+		module = 1;
+		cs = 1;
+	} else if (pin == Name::kGPIO_EMC_14) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		module = 2;
+		cs = 1;
+	} else if (pin == Name::kGPIO_AD_B0_04) {
+		config.mux_mode = Config::MuxMode::kAlt7;
+		module = 3;
+		cs = 1;
+	} else if (pin == Name::kGPIO_B1_03) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 4;
+		cs = 1;
+	} else if (pin == Name::kGPIO_EMC_40) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 1;
+		cs = 2;
+	} else if (pin == Name::kGPIO_SD_B1_10) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		module = 2;
+		cs = 2;
+	} else if (pin == Name::kGPIO_AD_B0_05) {
+		config.mux_mode = Config::MuxMode::kAlt7;
+		module = 3;
+		cs = 2;
+	} else if (pin == Name::kGPIO_B1_02) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 4;
+		cs = 2;
+	} else if (pin == Name::kGPIO_EMC_41) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 1;
+		cs = 3;
+	} else if (pin == Name::kGPIO_SD_B1_11) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		module = 2;
+		cs = 3;
+	} else if (pin == Name::kGPIO_AD_B0_06) {
+		config.mux_mode = Config::MuxMode::kAlt7;
+		module = 3;
+		cs = 3;
+	} else if (pin == Name::kGPIO_B1_11) {
+		config.mux_mode = Config::MuxMode::kAlt6;
+		module = 4;
+		cs = 3;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData0PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_10) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 0;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData1PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_11) {
+		config.mux_mode = Config::MuxMode::kAlt2;
+		module = 0;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData2PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B0_11 || pin == Name::kGPIO_AD_B1_15) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+		if (pin == Name::kGPIO_AD_B0_11) {
+			*((uint32_t*) 0x401F8400U) = 0x1u;
+		} else {
+			*((uint32_t*) 0x401F8400U) = 0x0u;
+		}
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData3PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B0_10 || pin == Name::kGPIO_AD_B1_14) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+		if (pin == Name::kGPIO_AD_B0_10) {
+			*((uint32_t*) 0x401F8404U) = 0x1u;
+		} else {
+			*((uint32_t*) 0x401F8404U) = 0x0u;
+		}
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData4PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B0_09 || pin == Name::kGPIO_AD_B1_13) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+		if (pin == Name::kGPIO_AD_B0_09) {
+			*((uint32_t*) 0x401F8408U) = 0x1u;
+		} else {
+			*((uint32_t*) 0x401F8408U) = 0x0u;
+		}
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData5PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B0_08 || pin == Name::kGPIO_AD_B1_12) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+		if (pin == Name::kGPIO_AD_B0_08) {
+			*((uint32_t*) 0x401F840CU) = 0x1u;
+		} else {
+			*((uint32_t*) 0x401F840CU) = 0x0u;
+		}
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData6PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B0_07 || pin == Name::kGPIO_AD_B1_11) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+		if (pin == Name::kGPIO_AD_B0_07) {
+			*((uint32_t*) 0x401F8410U) = 0x1u;
+		} else {
+			*((uint32_t*) 0x401F8410U) = 0x0u;
+		}
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData7PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B0_06 || pin == Name::kGPIO_AD_B1_10) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+		if (pin == Name::kGPIO_AD_B0_06) {
+			*((uint32_t*) 0x401F8414U) = 0x1u;
+		} else {
+			*((uint32_t*) 0x401F8414U) = 0x0u;
+		}
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData8PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B1_09 || pin == Name::kGPIO_AD_B0_05) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+		if (pin == Name::kGPIO_AD_B0_05) {
+			*((uint32_t*) 0x401F8418U) = 0x1u;
+		} else {
+			*((uint32_t*) 0x401F8418U) = 0x0u;
+		}
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData9PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B1_08 || pin == Name::kGPIO_AD_B0_04) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+		if (pin == Name::kGPIO_AD_B0_04) {
+			*((uint32_t*) 0x401F841CU) = 0x1u;
+		} else {
+			*((uint32_t*) 0x401F841CU) = 0x0u;
+		}
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData10PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_09) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt2;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData11PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_08) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt2;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData12PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_07) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt2;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData13PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_06) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt2;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData14PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_05) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt2;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData15PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_04) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt2;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData16PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_37) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData17PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_36) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData18PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_35) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData19PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_34) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData20PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_33) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData21PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_32) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData22PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_31) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIData23PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_30) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIFieldPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_EMC_38) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIHsyncPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B1_07 || pin == Name::kGPIO_B1_14 || pin == Name::kGPIO_AD_B0_15) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+		if (pin == Name::kGPIO_AD_B1_07) {
+			*((uint32_t*) 0x401F8420U) = 0x1u;
+		} else if (pin == Name::kGPIO_B1_14) {
+			*((uint32_t*) 0x401F8420U) = 0x2u;
+			config.mux_mode = Config::MuxMode::kAlt2;
+		} else {
+			*((uint32_t*) 0x401F8420U) = 0x0u;
+		}
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIMclkPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B1_05 || pin == Name::kGPIO_B1_15) {
+		module = 0;
+		config.mux_mode = pin == Name::kGPIO_AD_B1_05 ? Config::MuxMode::kAlt4 : Config::MuxMode::kAlt2;
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIPclkPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_12 || pin == Name::kGPIO_AD_B1_04) {
+		module = 0;
+		if (pin == Name::kGPIO_B1_12) {
+			*((uint32_t*) 0x401F8424U) = 0x1u;
+			config.mux_mode = Config::MuxMode::kAlt2;
+		} else {
+			*((uint32_t*) 0x401F8424U) = 0x0u;
+			config.mux_mode = Config::MuxMode::kAlt4;
+		}
+	} else {
+		return false;
+	}
+	config.force_input = false;
+	return true;
+}
+
+bool GetCSIVsyncPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B0_14 || pin == Name::kGPIO_AD_B1_06 || pin == Name::kGPIO_B1_13) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt4;
+		if (pin == Name::kGPIO_AD_B1_06) {
+			*((uint32_t*) 0x401F8428U) = 0x1u;
+		} else if (pin == Name::kGPIO_B1_13) {
+			*((uint32_t*) 0x401F8428U) = 0x2u;
+			config.mux_mode = Config::MuxMode::kAlt2;
+		} else {
+			*((uint32_t*) 0x401F8428U) = 0x0u;
+		}
+	} else {
+		return false;
+	}
+	config.force_input = false;
 	return true;
 }
 
@@ -413,6 +1142,10 @@ void InitPin(Config& config) {
 	}
 	pin_config_reg |= (uint32_t)(((uint32_t) config.pin_config.hysteresis_enable) << 16);
 	*((volatile uint32_t*) (0x401F8204U + ((uint32_t) config.pin) * 4u)) = pin_config_reg;
+}
+
+void DeinitPin(System::Pinout::Name pin_name) {
+	pin_active[(uint8_t) pin_name] = false;
 }
 
 }

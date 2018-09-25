@@ -49,12 +49,12 @@ struct Config {
 		enum struct PullConfig {
 			k100kPullDown, k47kPullUp, k100kPullUp, k22kPullUp
 		};
-		bool fast_slew_rate = true;
-		DriveStrength drive_strength = DriveStrength::kDSE1;
-		Speed speed = Speed::k200MHz;
+		bool fast_slew_rate = false;
+		DriveStrength drive_strength = DriveStrength::kDSE6;
+		Speed speed = Speed::k100MHz2;
 		bool open_drain_enable = false;
-		PullKeepConfig pull_keep_config = PullKeepConfig::kDisable;
-		PullConfig pull_config;	//Pull resistance select, require pull_keep_config set to kPull first
+		PullKeepConfig pull_keep_config = PullKeepConfig::kKeep;
+		PullConfig pull_config = PullConfig::k22kPullUp;	//Pull resistance select, require pull_keep_config set to kPull first
 		bool hysteresis_enable = false;
 	};
 	Name pin;
@@ -64,13 +64,52 @@ struct Config {
 };
 
 bool GetADCPinConfig(Config& config);
+
 bool GetPWMPinConfig(Config& config, PWM_Type* pwm_base, uint8_t sub_module);
+
 bool GetUartTXPinConfig(Config& config, LPUART_Type* uart_base);
 bool GetUartRXPinConfig(Config& config, LPUART_Type* uart_base);
+
 bool GetI2CSclPinConfig(Config& config,uint8_t& module);
 bool GetI2CSdaPinConfig(Config& config, uint8_t& module);
 
+bool GetSpiSckPinConfig(Config& config, uint8_t& module);
+bool GetSpiSdoPinConfig(Config& config, uint8_t& module);
+bool GetSpiSdiPinConfig(Config& config, uint8_t& module);
+bool GetSpiPCSPinConfig(Config& config, uint8_t& module, uint8_t& cs);
+
+bool GetCSIData0PinConfig(Config& config, uint8_t& module);
+bool GetCSIData1PinConfig(Config& config, uint8_t& module);
+bool GetCSIData2PinConfig(Config& config, uint8_t& module);
+bool GetCSIData3PinConfig(Config& config, uint8_t& module);
+bool GetCSIData4PinConfig(Config& config, uint8_t& module);
+bool GetCSIData5PinConfig(Config& config, uint8_t& module);
+bool GetCSIData6PinConfig(Config& config, uint8_t& module);
+bool GetCSIData7PinConfig(Config& config, uint8_t& module);
+bool GetCSIData8PinConfig(Config& config, uint8_t& module);
+bool GetCSIData9PinConfig(Config& config, uint8_t& module);
+bool GetCSIData10PinConfig(Config& config, uint8_t& module);
+bool GetCSIData11PinConfig(Config& config, uint8_t& module);
+bool GetCSIData12PinConfig(Config& config, uint8_t& module);
+bool GetCSIData13PinConfig(Config& config, uint8_t& module);
+bool GetCSIData14PinConfig(Config& config, uint8_t& module);
+bool GetCSIData15PinConfig(Config& config, uint8_t& module);
+bool GetCSIData16PinConfig(Config& config, uint8_t& module);
+bool GetCSIData17PinConfig(Config& config, uint8_t& module);
+bool GetCSIData18PinConfig(Config& config, uint8_t& module);
+bool GetCSIData19PinConfig(Config& config, uint8_t& module);
+bool GetCSIData20PinConfig(Config& config, uint8_t& module);
+bool GetCSIData21PinConfig(Config& config, uint8_t& module);
+bool GetCSIData22PinConfig(Config& config, uint8_t& module);
+bool GetCSIData23PinConfig(Config& config, uint8_t& module);
+bool GetCSIFieldPinConfig(Config& config, uint8_t& module);
+bool GetCSIHsyncPinConfig(Config& config, uint8_t& module);
+bool GetCSIMclkPinConfig(Config& config, uint8_t& module);
+bool GetCSIPclkPinConfig(Config& config, uint8_t& module);
+bool GetCSIVsyncPinConfig(Config& config, uint8_t& module);
+
 void InitPin(Config& config);
+void DeinitPin(System::Pinout::Name pin_name);
 
 }
 }

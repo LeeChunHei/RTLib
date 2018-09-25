@@ -8,6 +8,7 @@
 #include "driver/i2c_master.h"
 #include "system/clock.h"
 #include "system/systick.h"
+#include "driver/gpio.h"
 #include <assert.h>
 
 using namespace System;
@@ -18,7 +19,31 @@ namespace Driver {
 
 uint32_t i2c_clock = 0;
 
-I2CMaster::I2CMaster(Config& config) :
+void SetPullDownPins(System::Pinout::Name scl, System::Pinout::Name sda) {
+	GPIO::Config config;
+	config.default_high = false;
+	config.gpio_dir = GPIO::Direction::kDigitalOutput;
+	config.pin_config.pull_keep_config = System::Pinout::Config::PinConfig::PullKeepConfig::kPull;
+	config.pin_config.pull_config = System::Pinout::Config::PinConfig::PullConfig::k100kPullDown;
+	config.pin = scl;
+	GPIO scl_pin(config);
+	config.pin = sda;
+	GPIO sda_pin(config);
+}
+
+void SetPullUpPins(System::Pinout::Name scl, System::Pinout::Name sda) {
+	GPIO::Config config;
+	config.default_high = true;
+	config.gpio_dir = GPIO::Direction::kDigitalOutput;
+	config.pin_config.pull_keep_config = System::Pinout::Config::PinConfig::PullKeepConfig::kPull;
+	config.pin_config.pull_config = System::Pinout::Config::PinConfig::PullConfig::k22kPullUp;
+	config.pin = scl;
+	GPIO scl_pin(config);
+	config.pin = sda;
+	GPIO sda_pin(config);
+}
+
+I2CMaster::I2CMaster(const Config& config) :
 		send_wait_time(config.send_wait_time), recieve_wait_time(config.recieve_wait_time), scl(config.scl), sda(config.sda) {
 	uint8_t scl_module, sda_module;
 	System::Pinout::Config scl_config, sda_config;
@@ -27,11 +52,15 @@ I2CMaster::I2CMaster(Config& config) :
 	if (!System::Pinout::GetI2CSclPinConfig(scl_config, scl_module) || !System::Pinout::GetI2CSdaPinConfig(sda_config, sda_module) || (scl_module != sda_module)) {
 		return;
 	}
+	SetPullDownPins(scl, sda);
+	SetPullUpPins(scl, sda);
+	SetPullDownPins(scl, sda);
+	SetPullUpPins(scl, sda);
 	System::Pinout::InitPin(scl_config);
 	System::Pinout::InitPin(sda_config);
 	*((uint32_t*)0x401F84CC)=0x1u;
 	*((uint32_t*)0x401F84D0)=0x1u;
-	i2c_base = (LPI2C_Type*) (0x403F0000u + scl_module);
+	i2c_base = (LPI2C_Type*) (0x403F0000u + scl_module*0x4000u);
 
 	/* Ungate the clock. */
 	CLOCK_EnableClock(i2c_ip_clock[(uint8_t) scl_module + 1]);
@@ -88,6 +117,7 @@ I2CMaster::I2CMaster(Config& config) :
 	}
 
 	Enable(config.enable_master);
+	i2c_base->MSR & 0b0011110000000000;
 }
 
 void I2CMaster::SetBaudRate(uint32_t source_clock_Hz, uint32_t baud_rate_Hz) {
