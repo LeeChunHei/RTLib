@@ -305,6 +305,7 @@ bool GetI2CSclPinConfig(Config& config, uint8_t& module) {
 		module = 0;
 	} else if (pin == Name::kGPIO_AD_B1_00) {
 		config.mux_mode = Config::MuxMode::kAlt3;
+		*((volatile uint32_t*) 0x401F84CC) = 0x1u;
 		module = 0;
 	} else if (pin == Name::kGPIO_SD_B1_04) {
 		config.mux_mode = Config::MuxMode::kAlt2;
@@ -353,6 +354,7 @@ bool GetI2CSdaPinConfig(Config& config, uint8_t& module) {
 		module = 0;
 	} else if (pin == Name::kGPIO_AD_B1_01) {
 		config.mux_mode = Config::MuxMode::kAlt3;
+		*((volatile uint32_t*) 0x401F84D0) = 0x1u;
 		module = 0;
 	} else if (pin == Name::kGPIO_SD_B1_05) {
 		config.mux_mode = Config::MuxMode::kAlt2;
@@ -620,6 +622,163 @@ bool GetSpiPCSPinConfig(Config& config, uint8_t& module, uint8_t& cs) {
 		return false;
 	}
 	config.force_input = false;
+	return true;
+}
+
+bool GetFlexSpiSckPinConfig(Config& config) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_SD_B1_07) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F84C8U) = 0;
+	} else if (pin == Name::kGPIO_AD_B1_14) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		*((uint32_t*) 0x401F84C8U) = 1;
+	} else if (pin == Name::kGPIO_SD_B1_04) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F8504U) = 0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = true;
+	return true;
+}
+
+bool GetFlexSpiSioPinConfig(Config& config) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B1_10) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		*((uint32_t*) 0x401F84B4U) = 1;
+	} else if (pin == Name::kGPIO_AD_B1_11) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		*((uint32_t*) 0x401F84B0U) = 1;
+	} else if (pin == Name::kGPIO_AD_B1_12) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		*((uint32_t*) 0x401F84ACU) = 1;
+	} else if (pin == Name::kGPIO_AD_B1_13) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		*((uint32_t*) 0x401F84A8U) = 1;
+	} else if (pin == Name::kGPIO_SD_B1_08) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F84A8U) = 0;
+	} else if (pin == Name::kGPIO_SD_B1_09) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F84ACU) = 0;
+	} else if (pin == Name::kGPIO_SD_B1_10) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F84B0U) = 0;
+	} else if (pin == Name::kGPIO_SD_B1_11) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F84B4U) = 0;
+	} else if (pin == Name::kGPIO_AD_B1_04) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		*((uint32_t*) 0x401F84C4U) = 1;
+	} else if (pin == Name::kGPIO_AD_B1_05) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		*((uint32_t*) 0x401F84C0U) = 1;
+	} else if (pin == Name::kGPIO_AD_B1_06) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		*((uint32_t*) 0x401F84BCU) = 1;
+	} else if (pin == Name::kGPIO_AD_B1_07) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		*((uint32_t*) 0x401F84B8U) = 1;
+	} else if (pin == Name::kGPIO_SD_B1_00) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F84C4U) = 0;
+	} else if (pin == Name::kGPIO_SD_B1_01) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F84C0U) = 0;
+	} else if (pin == Name::kGPIO_SD_B1_02) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F84BCU) = 0;
+	} else if (pin == Name::kGPIO_SD_B1_03) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F84B8U) = 0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = true;
+	return true;
+}
+
+bool GetFlexSpiCSPinConfig(Config& config, uint8_t& cs) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_AD_B1_08) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		cs = 1;
+	} else if (pin == Name::kGPIO_AD_B1_15) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		cs = 0;
+	} else if (pin == Name::kGPIO_SD_B0_00) {
+		config.mux_mode = Config::MuxMode::kAlt6;
+		cs = 1;
+	} else if (pin == Name::kGPIO_SD_B1_04) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		cs = 1;
+	} else if (pin == Name::kGPIO_SD_B1_06) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		cs = 0;
+	} else if (pin == Name::kGPIO_SD_B0_01) {
+		config.mux_mode = Config::MuxMode::kAlt6;
+		cs = 3;
+	} else if (pin == Name::kGPIO_SD_B0_04) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		cs = 2;
+	} else if (pin == Name::kGPIO_SD_B1_05) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+		cs = 2;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = true;
+	return true;
+}
+
+bool GetFlexSpiDQSPinConfig(Config& config) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_SD_B0_05) {
+		config.mux_mode = Config::MuxMode::kAlt4;
+	} else if (pin == Name::kGPIO_AD_B1_09) {
+		config.mux_mode = Config::MuxMode::kAlt0;
+		*((uint32_t*) 0x401F84A4U) = 1;
+	} else if (pin == Name::kGPIO_SD_B1_05) {
+		config.mux_mode = Config::MuxMode::kAlt1;
+		*((uint32_t*) 0x401F84A4U) = 0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = true;
 	return true;
 }
 
@@ -1120,6 +1279,567 @@ bool GetCSIVsyncPinConfig(Config& config, uint8_t& module) {
 	return true;
 }
 
+bool GeteLCDIFData0PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_04) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData1PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_05) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData2PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_06) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData3PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_07) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData4PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_08) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData5PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_09) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData6PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_10) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData7PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_11) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData8PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_12) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData9PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_13) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData10PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_14) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData11PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_15) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData12PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_00) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData13PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_01) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData14PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_02) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData15PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_03) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData16PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_04) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData17PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_05) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData18PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_06) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData19PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_07) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData20PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_08) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData21PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_09) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData22PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_10) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFData23PinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B1_11) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFEnablePinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_01) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFHsyncPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_02) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFVsyncPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_03) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+bool GeteLCDIFPclkPinConfig(Config& config, uint8_t& module) {
+	if (pin_active[(uint8_t) config.pin]) {
+		return false;
+	}
+	Name pin = config.pin;
+	if (pin == Name::kGPIO_B0_00) {
+		module = 0;
+		config.mux_mode = Config::MuxMode::kAlt0;
+	} else {
+		return false;
+	}
+	config.pin_config.fast_slew_rate = true;
+	config.pin_config.speed = Config::PinConfig::Speed::k200MHz;
+	config.pin_config.open_drain_enable = false;
+	config.pin_config.pull_keep_config = Config::PinConfig::PullKeepConfig::kKeep;
+	config.pin_config.hysteresis_enable = false;
+	config.force_input = false;
+	return true;
+}
+
+
 void InitPin(Config& config) {
 	if (pin_active[(uint8_t) config.pin]) {
 		assert(false);
@@ -1137,8 +1857,8 @@ void InitPin(Config& config) {
 		pin_config_reg |= 1 << 12;
 		if (config.pin_config.pull_keep_config == Config::PinConfig::PullKeepConfig::kPull) {
 			pin_config_reg |= 1 << 13;
-			pin_config_reg |= (uint32_t)(((uint32_t) config.pin_config.pull_config) << 14);
 		}
+		pin_config_reg |= (uint32_t)(((uint32_t) config.pin_config.pull_config) << 14);
 	}
 	pin_config_reg |= (uint32_t)(((uint32_t) config.pin_config.hysteresis_enable) << 16);
 	*((volatile uint32_t*) (0x401F8204U + ((uint32_t) config.pin) * 4u)) = pin_config_reg;

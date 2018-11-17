@@ -78,6 +78,16 @@ bool GetSpiSdoPinConfig(Config& config, uint8_t& module);
 bool GetSpiSdiPinConfig(Config& config, uint8_t& module);
 bool GetSpiPCSPinConfig(Config& config, uint8_t& module, uint8_t& cs);
 
+bool GetSpiSckPinConfig(Config& config, uint8_t& module);
+bool GetSpiSdoPinConfig(Config& config, uint8_t& module);
+bool GetSpiSdiPinConfig(Config& config, uint8_t& module);
+bool GetSpiPCSPinConfig(Config& config, uint8_t& module, uint8_t& cs);
+
+bool GetFlexSpiSckPinConfig(Config& config);
+bool GetFlexSpiSioPinConfig(Config& config);
+bool GetFlexSpiCSPinConfig(Config& config, uint8_t& cs);
+bool GetFlexSpiDQSPinConfig(Config& config);
+
 bool GetCSIData0PinConfig(Config& config, uint8_t& module);
 bool GetCSIData1PinConfig(Config& config, uint8_t& module);
 bool GetCSIData2PinConfig(Config& config, uint8_t& module);
@@ -107,6 +117,35 @@ bool GetCSIHsyncPinConfig(Config& config, uint8_t& module);
 bool GetCSIMclkPinConfig(Config& config, uint8_t& module);
 bool GetCSIPclkPinConfig(Config& config, uint8_t& module);
 bool GetCSIVsyncPinConfig(Config& config, uint8_t& module);
+
+bool GeteLCDIFData0PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData1PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData2PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData3PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData4PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData5PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData6PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData7PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData8PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData9PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData10PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData11PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData12PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData13PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData14PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData15PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData16PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData17PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData18PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData19PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData20PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData21PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData22PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFData23PinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFEnablePinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFHsyncPinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFVsyncPinConfig(Config& config, uint8_t& module);
+bool GeteLCDIFPclkPinConfig(Config& config, uint8_t& module);
 
 void InitPin(Config& config);
 void DeinitPin(System::Pinout::Name pin_name);

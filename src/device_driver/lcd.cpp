@@ -6,7 +6,7 @@
  */
 
 #include "device_driver/lcd.h"
-#include <cmath>
+#include <cstdlib>
 
 namespace DeviceDriver {
 
@@ -55,9 +55,9 @@ void Lcd::DrawCircle(const uint32_t xc, const uint32_t yc, const uint32_t radius
 
 void Lcd::DrawLine(const uint32_t start_x, const uint32_t start_y, const uint32_t end_x, const uint32_t end_y, const uint32_t color, const uint32_t width) {
 	if (start_x == end_x) {
-		FillColor( { start_x - (width >> 1), start_y, width, std::abs(end_y - start_y) }, color);
+		FillColor(DeviceDriver::Lcd::Rect(start_x - (width >> 1), start_y, width, std::abs((int) (end_y - start_y))), color);
 	} else if (start_y == end_y) {
-		FillColor( { start_x, start_y - (width >> 1), std::abs(end_x - start_x), width }, color);
+		FillColor(DeviceDriver::Lcd::Rect(start_x, start_y - (width >> 1), std::abs((int) (end_x - start_x)), width), color);
 	} else {
 //		deltaX = endpoint.X - origin.X
 //		deltaY = endpoint.Y - origin.Y

@@ -93,7 +93,7 @@ include MakeConfig.inc
 ifeq ($(MCU),MIMXRT1052)
 CPPFLAGS+=-DMIMXRT1052=1
 CCFLAGS+=-mthumb -mthumb-interwork -mcpu=cortex-m7 -march=armv7e-m
-CCFLAGS+=-mfpu=fpv5-sp-d16 -mfloat-abi=hard
+CCFLAGS+=-mfpu=fpv5-d16 -mfloat-abi=hard
 $(info MCU = MIMXRT1052)
 
 else

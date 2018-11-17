@@ -83,6 +83,13 @@ public:
 	ADC_Listener* GetListener() const {
 		return listener;
 	}
+	inline void EnableDMA(bool enable) {
+		if (enable) {
+			adc_base->GC |= ADC_GC_DMAEN_MASK;
+		} else {
+			adc_base->GC &= ~ADC_GC_DMAEN_MASK;
+		}
+	}
 private:
 	System::Pinout::Name GetInputPinName(Input input);
 	bool OpenADCInputPin(System::Pinout::Name pin_name);

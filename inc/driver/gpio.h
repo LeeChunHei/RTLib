@@ -38,6 +38,7 @@ public:
 		uint8_t interrupt_priority = 15;	//Interrupt priority, range [0-15], smaller value means higher priority
 		GPIO_Listener listener = nullptr;
 		bool start_interrupt = false;
+		bool force_input = false;
 	};
 	GPIO(const Config& config);
 	~GPIO();
@@ -68,7 +69,7 @@ public:
 	 * @retval input logic level.
 	 */
 	bool Get() const {
-		return (((gpio_base->DR) >> gpio_pin) & 1u);
+		return (((gpio_base->PSR) >> gpio_pin) & 1u);
 	}
 	/*
 	 * @brief Enable pin interrupt

@@ -11,6 +11,8 @@
 
 namespace Driver {
 
+eLCDIF* elcdif_ptr;
+
 using namespace System;
 
 const clock_ip_name_t s_elcdifApbClocks[] = LCDIF_CLOCKS;
@@ -43,21 +45,178 @@ LCDIF_CTRL_WORD_LENGTH(3U),
 /* Register CTRL1. */
 LCDIF_CTRL1_BYTE_PACKING_FORMAT(0x0FU) } };
 
-eLCDIF::eLCDIF(Config& config) {
+eLCDIF::eLCDIF(const Config& config) {
 
-	uint8_t module = 0;
+	uint8_t module, prev_module;
+	Pinout::Config pin_config;
+
+	pin_config.pin = config.pin_list.pclk;
+	assert(Pinout::GeteLCDIFPclkPinConfig(pin_config, prev_module));
+	Pinout::InitPin(pin_config);
+	pin_config.pin = config.pin_list.hsync;
+	assert(Pinout::GeteLCDIFHsyncPinConfig(pin_config, module) && module == prev_module);
+	Pinout::InitPin(pin_config);
+	pin_config.pin = config.pin_list.vsync;
+	assert(Pinout::GeteLCDIFVsyncPinConfig(pin_config, module));
+	Pinout::InitPin(pin_config);
+	pin_config.pin = config.pin_list.enable;
+	assert(Pinout::GeteLCDIFEnablePinConfig(pin_config, module));
+	Pinout::InitPin(pin_config);
+
+	if (config.pin_list.data0 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data0;
+		assert(Pinout::GeteLCDIFData0PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data1 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data1;
+		assert(Pinout::GeteLCDIFData1PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data2 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data2;
+		assert(Pinout::GeteLCDIFData2PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data3 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data3;
+		assert(Pinout::GeteLCDIFData3PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data4 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data4;
+		assert(Pinout::GeteLCDIFData4PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data5 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data5;
+		assert(Pinout::GeteLCDIFData5PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data6 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data6;
+		assert(Pinout::GeteLCDIFData6PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data7 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data7;
+		assert(Pinout::GeteLCDIFData7PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data8 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data8;
+		assert(Pinout::GeteLCDIFData8PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data9 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data9;
+		assert(Pinout::GeteLCDIFData9PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data10 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data10;
+		assert(Pinout::GeteLCDIFData10PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data11 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data11;
+		assert(Pinout::GeteLCDIFData11PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data12 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data12;
+		assert(Pinout::GeteLCDIFData12PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data13 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data13;
+		assert(Pinout::GeteLCDIFData13PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data14 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data14;
+		assert(Pinout::GeteLCDIFData14PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data15 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data15;
+		assert(Pinout::GeteLCDIFData15PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data16 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data16;
+		assert(Pinout::GeteLCDIFData16PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data17 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data17;
+		assert(Pinout::GeteLCDIFData17PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data18 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data18;
+		assert(Pinout::GeteLCDIFData18PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data19 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data19;
+		assert(Pinout::GeteLCDIFData19PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data20 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data20;
+		assert(Pinout::GeteLCDIFData20PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data21 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data21;
+		assert(Pinout::GeteLCDIFData21PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data22 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data22;
+		assert(Pinout::GeteLCDIFData22PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
+	if (config.pin_list.data23 != Pinout::Name::kDisable) {
+		pin_config.pin = config.pin_list.data23;
+		assert(Pinout::GeteLCDIFData23PinConfig(pin_config, module));
+		Pinout::InitPin(pin_config);
+	}
 
 	uint32_t desire_pclk = (config.width + config.hsync_pulse_width + config.horizontal_front_porch + config.horizontal_back_porch) * (config.height + config.vsync_pulse_width + config.vertical_front_porch + config.vertical_back_porch) * config.frame_rate;
-	desire_pclk = video_pll_clock / desire_pclk;
-	if (desire_pclk < 9) {	//maximum value for pre div is 8
-		CLOCK_SetDiv(kCLOCK_LcdifPreDiv, desire_pclk);
-		CLOCK_SetDiv(kCLOCK_LcdifDiv, 1);
-	} else if (desire_pclk / 8 < 9) {	//maximum value for div is 8
-		CLOCK_SetDiv(kCLOCK_LcdifPreDiv, 8);
-		CLOCK_SetDiv(kCLOCK_LcdifDiv, desire_pclk / 8);
-	} else {
-		return;
+	uint32_t best_difference = 4294967295;
+	uint32_t best_loopDivider, best_preDiv, best_div, best_postDivider;
+	uint32_t postDividerList[5] = { 1, 2, 4, 8, 16 };
+	for (uint32_t loopDivider = 27; loopDivider < 55; ++loopDivider) {
+		for (uint32_t postDivider = 0; postDivider < 5; ++postDivider) {
+			for (uint32_t preDiv = 1; preDiv < 9; ++preDiv) {
+				for (uint32_t div = 1; div < 9; ++div) {
+					uint32_t clock = ((24000000 * (loopDivider) / postDividerList[postDivider]) / preDiv) / div;
+					uint32_t difference;
+					if (clock > desire_pclk) {
+						difference = clock - desire_pclk;
+					} else {
+						difference = desire_pclk - clock;
+					}
+					if (difference < best_difference) {
+						best_difference = difference;
+						best_loopDivider = loopDivider;
+						best_preDiv = preDiv;
+						best_div = div;
+						best_postDivider = postDivider;
+					}
+				}
+			}
+		}
 	}
+
+	clock_video_pll_config_t pll_config = { .loopDivider = best_loopDivider, .postDivider = postDividerList[best_postDivider], .numerator = 0, .denominator = 0, };
+
+	CLOCK_InitVideoPll(&pll_config);
+	CLOCK_SetMux(kCLOCK_LcdifPreMux, 2);
+	CLOCK_SetDiv(kCLOCK_LcdifPreDiv, best_preDiv);
+	CLOCK_SetDiv(kCLOCK_LcdifDiv, best_div);
 
 	/* Enable the clock. */
 	CLOCK_EnableClock(s_elcdifApbClocks[module]);
@@ -90,10 +249,14 @@ eLCDIF::eLCDIF(Config& config) {
 
 	elcdif_base->CUR_BUF = config.buffer_addr;
 	elcdif_base->NEXT_BUF = config.buffer_addr;
-}
 
-inline void eLCDIF::Start() {
-	elcdif_base->CTRL_SET = LCDIF_CTRL_RUN_MASK | LCDIF_CTRL_DOTCLK_MODE_MASK;
+	if (config.listener) {
+		elcdif_ptr = this;
+		listener = config.listener;
+		NVIC_EnableIRQ (LCDIF_IRQn);
+		NVIC_SetPriority(LCDIF_IRQn, config.interrupt_priority);
+		elcdif_base->CTRL1_SET = (LCDIF_CTRL1_CUR_FRAME_DONE_IRQ_EN_MASK & (LCDIF_CTRL1_BM_ERROR_IRQ_EN_MASK | LCDIF_CTRL1_OVERFLOW_IRQ_EN_MASK | LCDIF_CTRL1_UNDERFLOW_IRQ_EN_MASK | LCDIF_CTRL1_CUR_FRAME_DONE_IRQ_EN_MASK | LCDIF_CTRL1_VSYNC_EDGE_IRQ_EN_MASK));
+	}
 }
 
 void eLCDIF::Reset() {
@@ -118,6 +281,22 @@ void eLCDIF::Reset() {
 	elcdif_base->CTRL_CLR = LCDIF_CTRL_SFTRST_MASK;
 	/* Disable the clock gate. */
 	elcdif_base->CTRL_CLR = LCDIF_CTRL_CLKGATE_MASK;
+}
+
+void eLCDIF::SetListener(eLCDIF_Listener listener, uint8_t interrupt_priority) {
+	elcdif_ptr = this;
+	this->listener = listener;
+	NVIC_EnableIRQ (LCDIF_IRQn);
+	NVIC_SetPriority(LCDIF_IRQn, interrupt_priority);
+	elcdif_base->CTRL1_SET = (LCDIF_CTRL1_CUR_FRAME_DONE_IRQ_EN_MASK & (LCDIF_CTRL1_BM_ERROR_IRQ_EN_MASK | LCDIF_CTRL1_OVERFLOW_IRQ_EN_MASK | LCDIF_CTRL1_UNDERFLOW_IRQ_EN_MASK | LCDIF_CTRL1_CUR_FRAME_DONE_IRQ_EN_MASK | LCDIF_CTRL1_VSYNC_EDGE_IRQ_EN_MASK));
+}
+
+extern "C" {
+void LCDIF_IRQHandler() {
+	uint32_t status = LCDIF->CTRL1 & (LCDIF_CTRL1_BM_ERROR_IRQ_MASK | LCDIF_CTRL1_OVERFLOW_IRQ_MASK | LCDIF_CTRL1_UNDERFLOW_IRQ_MASK | LCDIF_CTRL1_CUR_FRAME_DONE_IRQ_MASK | LCDIF_CTRL1_VSYNC_EDGE_IRQ_MASK);
+	LCDIF->CTRL1_CLR = status;
+	elcdif_ptr->GetListener()(elcdif_ptr);
+}
 }
 
 }

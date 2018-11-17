@@ -32,7 +32,9 @@ public:
 	 */
 	void Set(uint32_t output) {
 		if (had_mask) {
-			pin_info[0].gpio_base->DR &= (mask | (output << shift));
+			uint32_t dr = pin_info[0].gpio_base->DR & mask;
+			dr |= (output << shift);
+			pin_info[0].gpio_base->DR = dr;
 		} else {
 			uint8_t shift_count = 0;
 			for (uint8_t i = 0; i < pin_info.size(); i++) {

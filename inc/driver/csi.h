@@ -17,7 +17,6 @@ namespace Driver {
 class Csi {
 public:
 	typedef std::function<void(Csi*)> Csi_Listener;
-//	typedef void (*Csi_Listener)(Csi* csi_ptr);
 	struct Config {
 		enum struct WorkMode {
 			kGatedClockMode = CSI_CSICR1_GCLK_MODE(1U), /*!< HSYNC, VSYNC, and PIXCLK signals are used. */

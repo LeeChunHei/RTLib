@@ -24,6 +24,7 @@ public:
 		uint16_t width = 752;
 		uint16_t height = 480;
 		HDR hdr_mode = HDR::kDisable;
+		Driver::I2CMaster* i2c_master = nullptr;
 	};
 	MT9V034(const Config& config);
 	void Start();
@@ -43,9 +44,8 @@ public:
 	void UnlockBuffer();
 private:
 	void RegSet(uint8_t reg_addr, uint16_t value);
-//	inline void CsiListener(Driver::Csi* csi_ptr);
 
-	Driver::I2CMaster i2c_master;
+	Driver::I2CMaster* i2c_master;
 	Driver::Csi csi;
 	uint16_t width, height;
 	bool is_started = false;

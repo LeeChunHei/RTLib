@@ -13,6 +13,7 @@ std::vector<GPIO*> port_listener[5];
 
 GPIO::GPIO(const GPIO::Config& config) {
 	System::Pinout::Config pin_config;
+	pin_config.force_input = config.force_input;
 	pin_config.pin = config.pin;
 	pin_config.mux_mode = System::Pinout::Config::MuxMode::kAlt5;
 	pin_config.pin_config = config.pin_config;
